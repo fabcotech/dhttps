@@ -5,9 +5,8 @@ name: CI dhttps
 
 on:
   push:
-    paths:
-      - './**'
-      - .github/workflows/ci-dhttps.yaml
+    branches:
+      - master
 
 jobs:
   build:
