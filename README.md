@@ -12,6 +12,10 @@ This process is called co-resolution, co-resolution is performed over TLS by **d
 
 ### How to use
 
+```sh
+npm i @fabcotech/dhttps
+```
+
 **dhttps** uses the dappy name system exclusively : .d and .gamma domains. You must own a domain in the dappy name system first : [purchase a .d domain](https://app.dappy.tech/), [get a free .gamma domain](https://gamma.dappy.tech/), [documentation for setting up zone and TLS certificates](https://docs.dappy.tech/docs/intro/).
 
 **dhttps** has two modes, the soft mode does not override or touch node's `https`, and the hard mode that overrides nodejs's `https`.
@@ -21,7 +25,7 @@ This process is called co-resolution, co-resolution is performed over TLS by **d
 The soft mode does not override any behavior of nodeJS, it just exposes `dhttps` and an interface similar to `https`: `dhttps.get` and `dhttps.request`.
 
 ```ts
-import dhttps from 'dhttps';
+import dhttps from '@fabcotech/dhttps';
 
 dhttps.get('https://dappy.d', (res) => {
   res.on('data', (c: any) => {
@@ -35,24 +39,20 @@ dhttps.get('https://dappy.d', (res) => {
 The hard mode overrides nodeJS's `https`
 
 ```ts
-import dhttps from 'dhttps';
+import dhttps from '@fabcotech/dhttps';
 
 dhttps.overrideNodeHttps();
 
-const req = https.get('https://dappy.d', (res) => {
+const req1 = https.get('https://dappy.d', (res) => {
   res.on('data', (c: any) => {
     console.log(c.toString('utf8'));
   });
 });
-req.on('error', console.log);
-```
-
-```ts
-import dhttps from 'dhttps';
+req1.on('error', console.log);
 
 dhttps.overrideNodeHttps();
 
-const req = https.request(
+const req2 = https.request(
   {
     method: 'post',
     host: 'dappy.d',
@@ -62,6 +62,6 @@ const req = https.request(
     console.log(res.statusText);
   },
 );
-req.on('error', console.log);
-req.end();
+req2.on('error', console.log);
+req2.end();
 ```
