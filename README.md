@@ -1,3 +1,5 @@
+![dhttps large image](https://raw.githubusercontent.com/fabcotech/dhttps/master/assets/dhttps.jpg)
+
 **dhttps** makes every nodeJS program 1000x more secure by isolating https requests from the Operating System, the Domain Name System and node's web PKI (hardcoded certificates authority from [Mozilla](https://wiki.mozilla.org/CA/Included_Certificates)) for TLS certificate verification.
 
 dhttps uses instead [dappy](https://dappy.tech), a new service discovery and name system co-secured by independent companies. Dappy is designed to avoid at all cost hacks or inaccuracies in the service discovery phase, mainly for financial or other high value programs 
