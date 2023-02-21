@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "composite": true,
     "module": "commonjs",
     "target": "es5",
     "sourceMap": true,
@@ -19,6 +17,8 @@
     "noEmit": false,
     "lib": [ "es2015" ],
     "allowJs": true,
+    "outDir": "./dist",
+    "composite": true,
   },
   "include": [
     "src/**/*.ts"

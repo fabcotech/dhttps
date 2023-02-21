@@ -6,7 +6,7 @@ dhttps uses instead [dappy](https://dappy.tech), a new service discovery and nam
 
 ### How exactly is it more secure ?
 
-In short, dappy domains end with .d, and they can be resolved (resolution means discovery of IP address and root certificate for TLS) only if the companies of the dappy network that are queried agree on the values, those companies are connected through a leaderless DLT. This distributed trust approach ensures that the client, program or browser never gets a wrong IP address or root certificate for a given domain.
+In short, dappy domains end with **.d**, and they can be resolved (resolution means discovery of IP address and root certificate for TLS) only if the companies of the dappy network that are queried agree on the values, those companies are connected through a leaderless DLT. This distributed trust approach ensures that the client, program or browser never gets a wrong IP address or root certificate for a given domain.
 
 This process is called co-resolution, co-resolution is performed over TLS by **dhttps** and not by a remote DNS resolver or service. Libraries and programs powered by dappy are independent from the certificate authorities system and the DNS.
 
