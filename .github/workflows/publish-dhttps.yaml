@@ -1,4 +1,4 @@
-name: publish dappy-lookup
+name: publish dhttps
 
 on: [workflow_dispatch]
 
