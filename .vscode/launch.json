@@ -1,0 +1,227 @@
+{
+  // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+  // Pointez pour afficher la description des attributs existants.
+  // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha Tests",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "stopOnEntry": false,
+      "cwd": "${workspaceRoot}",
+      "env": {
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\" }"
+      },
+      "args": [
+        "-r",
+        "ts-node/register",
+        "--inspect-brk",
+        "${relativeFile}"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "cli",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register",
+      ],
+      "args": [
+        "./bin/dappy-lookup-debug.ts",
+        "${input:dappy-name}",
+        "${input:record-type}",
+        "--network=${input:dappy-network}",
+      ],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\" }"
+      }
+    },
+    {
+      "name": "cli (custom http dappy-node)",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register",
+      ],
+      "args": [
+        "./bin/dappy-lookup-debug.ts",
+        "${input:dappy-name}",
+        "${input:record-type}",
+        "--endpoint=${input:dappy-node-http-endpoint}",
+        "--hostname=${input:dappy-node-hostname}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\" }"
+      }
+    },
+    {
+      "name": "cli (custom https dappy-node)",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register",
+      ],
+      "args": [
+        "./bin/dappy-lookup-debug.ts",
+        "${input:dappy-name}",
+        "${input:record-type}",
+        "--endpoint=${input:dappy-node-https-endpoint}",
+        "--hostname=${input:dappy-node-hostname}",
+        "--cacert=${input:dappy-node-cacert}",
+      ],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\" }"
+      }
+    },
+    {
+      "name": "cli (custom network file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register",
+      ],
+      "args": [
+        "./bin/dappy-lookup-debug.ts",
+        "${input:dappy-name}",
+        "${input:record-type}",
+        "--network-file=${input:dappy-network-file}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\" }"
+      }
+    },
+    {
+      "name": "cli savecertificate (custom network file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register",
+      ],
+      "args": [
+        "./bin/dappy-lookup-debug.ts",
+        "savecertificate",
+        "${input:dappy-name}",
+        "--out=${input:certificate-filename}",
+        "--network-file=${input:dappy-network-file}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\" }"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "dappy-name",
+      "description": "The name to lookup",
+      "type": "promptString",
+      "default": "example.dappy",
+    },
+    {
+      "id": "record-type",
+      "description": "record type",
+      "type": "pickString",
+      "options": [
+        "A",
+        "AAAA",
+        "CERT",
+        "TXT",
+        "CSP"
+      ]
+    },
+    {
+      "id": "dappy-network-file",
+      "description": "Dappy network file",
+      "type": "promptString",
+      "default": "./custom-dappy-network.json",
+    },
+    {
+      "id": "dappy-node-http-endpoint",
+      "description": "Dappy node http endpoint",
+      "type": "promptString",
+      "default": "http://127.0.0.1:3001",
+    },
+    {
+      "id": "dappy-node-https-endpoint",
+      "description": "Dappy node https endpoint",
+      "type": "promptString",
+      "default": "https://127.0.0.1:3002",
+    },
+    {
+      "id": "dappy-node-hostname",
+      "description": "Dappy node hostname",
+      "type": "promptString",
+      "default": "localhost",
+    },
+    {
+      "id": "dappy-node-cacert",
+      "description": "Dappy node hostname",
+      "type": "promptString",
+      "default": "./dappynode.crt",
+    },
+    {
+      "id": "certificate-filename",
+      "description": "Dappy node hostname",
+      "type": "promptString",
+      "default": "certificate",
+    },
+    {
+      "id": "dappy-network",
+      "description": "Dappy network",
+      "type": "pickString",
+      "options": [
+        "d",
+        "gamma"
+      ]
+    }
+  ]
+}

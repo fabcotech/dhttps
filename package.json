@@ -1,0 +1,81 @@
+{
+  "name": "@fabcotech/dhttps",
+  "version": "0.0.1",
+  "description": "Activate resolution of .d domains in any nodeJS runtime",
+  "author": "FABCO <contact@fabco.tech>",
+  "license": "MIT",
+  "homepage": "https://github.com/fabcotech/dappy-tools",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabcotech/dappy-tools.git"
+  },
+  "keywords": [
+    "https",
+    "webpki",
+    "dappy",
+    "rchain",
+    "blockchain",
+    "domain",
+    "name system",
+    "dns"
+  ],
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "cli": "dist/cli/index.js",
+  "files": [
+    "dist/",
+    "dist/index.d.ts",
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "test": "TS_NODE_PROJECT=./tsconfig.build.json mocha -r ts-node/register 'src/**/*.spec.ts'",
+    "test:watch": "TS_NODE_PROJECT=./tsconfig.build.json mocha -r ts-node/register 'src/**/*.spec.ts' --watch --watch-files *.ts",
+    "clean:dist": "rm -rf dist",
+    "clean:node_modules": "rm -rf node_modules",
+    "build": "npm run clean:dist && tsc -b ./tsconfig.build.json",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write 'src/**/*.ts'"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.19.4",
+    "@types/chai": "^4.3.0",
+    "@types/chai-spies": "^1.0.3",
+    "@types/dns-packet": "^5.2.4",
+    "@types/lodash.merge": "^4.6.7",
+    "@types/mocha": "^9.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
+    "chai": "^4.3.6",
+    "chai-spies": "^1.0.0",
+    "eslint": "^8.8.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "mocha": "^9.2.0",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.5.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@fabcotech/dappy-lookup": "2.3.15"
+  },
+  "bugs": {
+    "url": "https://github.com/fabcotech/dappy-lookup/issues"
+  },
+  "ts-node": {
+    "files": true,
+    "compilerOptions": {
+      "module": "esnext",
+      "types": [
+        "node"
+      ]
+    }
+  }
+}
