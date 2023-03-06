@@ -64,6 +64,15 @@ const startServer = () => {
         key,
       },
       (req, res) => {
+        if (req.url === '/stream') {
+          res.write('streams');
+          setTimeout(() => {
+            res.write(' work !');
+            res.end();
+          }, 200);
+          return;
+        }
+
         let data = '';
         req.on('data', (c) => {
           data += c;
@@ -90,8 +99,20 @@ describe('dhttps, get/post/put queries on local web server', () => {
   after(stopServer);
   it('should dhttps.get', (done) => {
     dhttps.get('https://dhttps.dappy.gamma:8001/path?query', (res) => {
-      res.on('data', (c: any) => {
+      res.on('data', (c: Buffer) => {
         expect(c.toString('utf8')).to.eql('GET /path?query');
+        done();
+      });
+    });
+  });
+  it('should dhttps.get (stream)', (done) => {
+    dhttps.get('https://dhttps.dappy.gamma:8001/stream', (res) => {
+      let d = '';
+      res.on('data', (c: Buffer) => {
+        d += c.toString('utf8');
+      });
+      res.on('end', () => {
+        expect(d).to.eql('streams work !');
         done();
       });
     });
@@ -105,7 +126,7 @@ describe('dhttps, get/post/put queries on local web server', () => {
         path: '/path?query',
       },
       (res) => {
-        res.on('data', (c: any) => {
+        res.on('data', (c: Buffer) => {
           expect(c.toString('utf8')).to.eql('POST /path?query');
           done();
         });
@@ -122,7 +143,7 @@ describe('dhttps, get/post/put queries on local web server', () => {
         path: '/path?query',
       },
       (res) => {
-        res.on('data', (c: any) => {
+        res.on('data', (c: Buffer) => {
           expect(c.toString('utf8')).to.eql('{"hello":"world"}');
           done();
         });
@@ -139,7 +160,7 @@ describe('dhttps, get/post/put queries on local web server', () => {
         path: '/path?query',
       },
       (res) => {
-        res.on('data', (c: any) => {
+        res.on('data', (c: Buffer) => {
           expect(c.toString('utf8')).to.eql('PUT /path?query');
           done();
         });
@@ -187,7 +208,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
   });
   it('should https.get (overridden)', (done) => {
     https.get('https://dhttps.dappy.gamma:8001/path?query', (res) => {
-      res.on('data', (c: any) => {
+      res.on('data', (c: Buffer) => {
         expect(c.toString('utf8')).to.eql('GET /path?query');
         done();
       });
@@ -202,7 +223,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
         path: '/path?query',
       },
       (res) => {
-        res.on('data', (c: any) => {
+        res.on('data', (c: Buffer) => {
           expect(c.toString('utf8')).to.eql('POST /path?query');
           done();
         });
@@ -219,7 +240,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
         path: '/path?query',
       },
       (res) => {
-        res.on('data', (c: any) => {
+        res.on('data', (c: Buffer) => {
           expect(c.toString('utf8')).to.eql('PUT /path?query');
           done();
         });
@@ -241,7 +262,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
         },
       },
       (res) => {
-        res.on('data', (c: any) => {
+        res.on('data', (c: Buffer) => {
           expect(c.toString('utf8')).to.eql('POST /path?query');
           done();
         });

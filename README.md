@@ -40,6 +40,7 @@ The hard mode overrides nodeJS's `https`
 
 ```ts
 import dhttps from '@fabcotech/dhttps';
+import https from 'https';
 
 dhttps.overrideNodeHttps();
 
