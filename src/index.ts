@@ -3,6 +3,7 @@ import http from 'http';
 import { lookupSimple } from '@fabcotech/dappy-lookup';
 
 import { validIpv4 } from './utils/validIpv4';
+import { separateHostsFromUrl } from './utils/separateHostsFromUrl';
 
 const getOptions = async (url: string, method: undefined | string) => {
   if (!url.startsWith('https://')) {
@@ -89,45 +90,77 @@ const dhttps = {
     cb: (a: any) => void,
     method?: 'get',
   ) => {
-    /*
-      Is it already a IpV4 or IPV6 address ?
-    */
-    let hostname;
+    let hosts: string[] = [];
+    let path = '';
     if (typeof options === 'string') {
-      hostname = new URL(options).hostname;
+      hosts = separateHostsFromUrl(options).hosts;
+      path = separateHostsFromUrl(options).path;
+      // hostname = new URL(options).hostname;
       /* todo extract ipv4 from url https://122.122.122.122/hey
       this way we can validate ipv4 with validIpv4() */
     } else {
-      hostname = options.host;
-    }
-    if (
-      validIpv4(hostname as string)
-      // || validIpv6(hostname)
-    ) {
-      if (method === 'get') return (https as any).getO(options, cb);
-      return (https as any).requestO(options, cb);
+      // hostname = options.host;
+      hosts = separateHostsFromUrl(options.host || '').hosts;
+      path = options.path || '';
     }
 
     let endCalled = false;
-    let error: any = null;
-    let onError: null | ((a: any) => void) = null;
-    let req: null | http.ClientRequest = null;
-    let payload: null | Buffer | string = null;
 
-    const f = async () => {
+    let onErrorGlobal: null | ((a: any) => void) = (a) => null;
+    let onErrorCallback: null | ((a: any) => void) = null;
+    let error: any = null;
+    let payload: null | Buffer | string = null;
+    let i = 0;
+    const requestForOneHost = async () => {
+      const hostnamee = hosts[i];
+      /*
+        IPV4 / IPV6 requests do not go through the
+        dappyLookup
+      */
+      if (
+        validIpv4(hostnamee as string)
+        // todo
+        // || validIpv6(hostname)
+      ) {
+        if (method === 'get') {
+          return (https as any).getO(options, (res: any) => {
+            if ([200, 400, 401, 403, 404].includes(res.statusCode)) {
+              cb(res);
+            } else {
+              (onErrorGlobal as any)('Unsupported status code');
+            }
+            res.on('error', (err: any) => {
+              (onErrorGlobal as any)(err);
+            });
+          });
+        }
+        return (https as any)
+          .requestO(options, (res: any) => {
+            if ([200, 400, 401, 403, 404].includes(res.statusCode)) {
+              cb(res);
+            } else {
+              (onErrorGlobal as any)('Unsupported status code');
+            }
+            res.on('error', (err: any) => {
+              (onErrorGlobal as any)(err);
+            });
+          })
+          .end(payload);
+      }
+
       let dOptions;
       try {
         if (typeof options === 'string') {
-          dOptions = await getOptions(options, method);
+          dOptions = await getOptions(`https://${hostnamee}${path}`, method);
         } else {
           dOptions = await getOptions(
-            `https://${options.host}${options.port ? `:${options.port}` : ''}${
-              options.path || ''
-            }`,
+            `https://${hostnamee}${
+              options.port ? `:${options.port}` : ''
+            }${path}`,
             options.method,
           );
         }
-        req = (https as any).request(
+        const req = (https as any).request(
           {
             ...(typeof options === 'string' ? {} : options),
             host: dOptions.host,
@@ -142,27 +175,36 @@ const dhttps = {
               host: dOptions.headers.host,
             },
           },
-          cb,
+          (res: any) => {
+            if ([200, 400, 401, 403, 404].includes(res.statusCode)) {
+              cb(res);
+            } else {
+              (onErrorGlobal as any)('Unsupported status code');
+            }
+            res.on('error', (err: any) => {
+              (onErrorGlobal as any)(err);
+            });
+          },
         );
         if (endCalled) {
           (req as http.ClientRequest).end(payload);
-          if (onError) {
-            (req as http.ClientRequest).on('error', onError);
-          }
+          (req as http.ClientRequest).on('error', onErrorGlobal as any);
         }
       } catch (err) {
+        (onErrorGlobal as any)(err);
+      }
+      return null;
+    };
+    onErrorGlobal = (err) => {
+      if (i === hosts.length - 1) {
         error = err;
-        if (onError) {
-          onError(error);
-        }
+        if (onErrorCallback) onErrorCallback(err);
+      } else {
+        i += 1;
+        requestForOneHost();
       }
     };
-    f();
 
-    /*
-      Return proxy object, waiting for dappy lookups
-      for IP and CERT
-    */
     return {
       write: (a: any) => {
         if (!payload) {
@@ -171,7 +213,8 @@ const dhttps = {
           payload += a;
         }
       },
-      end: (a: any) => {
+      end: (a?: any) => {
+        if (endCalled) return;
         endCalled = true;
         if (a) {
           if (!payload) {
@@ -180,25 +223,13 @@ const dhttps = {
             payload += a;
           }
         }
-        if (req) req.end(payload);
+        requestForOneHost();
       },
       on: (event: string, cbb: (a: any) => void) => {
         if (event === 'error') {
-          // req is already created
-          if (req) {
-            if (onError) {
-              if (error) {
-                cbb(error);
-              } else {
-                req.on('error', cbb);
-              }
-            }
-            // req is not created yet
-          } else {
-            onError = cbb;
-            if (error) {
-              onError(error);
-            }
+          onErrorCallback = cbb;
+          if (error) {
+            onErrorCallback(error);
           }
         }
       },

@@ -4,66 +4,85 @@ import https from 'https';
 import dhttps from './index';
 
 /*
-  cert and key generated with dappy-cli
-  npx @fabcotech/dappy-cli generatecerts --hosts dhttps.dappy.gamma
+  Test domain or subdomain is really registered
+  in the gamma network
 */
-const cert = `-----BEGIN CERTIFICATE-----
-MIIDCDCCAfCgAwIBAgIUURpurU55ADBs/nXuEqWreAHc3ZEwDQYJKoZIhvcNAQEL
-BQAwHTEbMBkGA1UEAwwSZGh0dHBzLmRhcHB5LmdhbW1hMB4XDTIzMDIxNjE1MjQ1
-N1oXDTMxMDUwNTE1MjQ1N1owHTEbMBkGA1UEAwwSZGh0dHBzLmRhcHB5LmdhbW1h
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1yZq3W/aFIOzTdhVVhk3
-w3sTbIDm0RZKNjVZYpx3wvYUMs2WbT+rZbn51zE3GuhelXQljHOFFqmyJPENMlHE
-I96yMb9OjBRaLslQ2sVpkS6S6dx0KSVOTc2IgGzXe9QPCtDHRHuU1bHO6eIsvxV1
-ixJrq8fj/d8PShFzdMQ2GNxM53wYC295G/Y1gXAIQPO2fzAtqtn2rzYCWTK88Fl/
-ipJN3jMw6ZhaGocA56xxUviBj1bud+mFCEeq52CitGxjAruaSF7+uuIZI7Rw1znT
-/U+kONqwyR5nMk+SkPmdoEb0ZWjkNmMpXyAzTtM0QE/xUYoVNw2l3grfxXeHzSkV
-cwIDAQABo0AwPjAdBgNVHREEFjAUghJkaHR0cHMuZGFwcHkuZ2FtbWEwHQYDVR0O
-BBYEFH6GSGbV6Qp8re6LHruDsH6m7HT6MA0GCSqGSIb3DQEBCwUAA4IBAQBzpyQi
-IPJNWkuno9EFonVHucMgHXjJXIBvPEQfoRuRNgm3cXoSiLc9BRcI4byGsxl4AMm4
-7p1iluWgLeBFaIbeJVuO+J5cnzWRxjUWB436DnMJuWYUBhCgtRPx7mlUU/iaa2fK
-Yv0D8iKoTxSmyv6mpkexTRB8UNaAuIbNYFwJDXafLmLWn+ZaJayOhYUsIp61fTlr
-+LT+BoITFPMfRuY6WX7XkcFi/ntCxUlSUQJ2PzOiShRuNqMCKglvf8SefEVDPzP6
-Nbne9NCtt+9UKxLXkZCLAlHGM0/LS/U04+h76thRvs8usmAhtS4Kom6HOpotttEn
-06axJ+nc0XLvDDsV
+export const testDomain = 'dhttps.nnike.gamma';
+
+/*
+  cert and key generated with dappy-cli
+  npx @fabcotech/dappy-cli generatecerts --hosts ${domain}
+*/
+export const cert = `-----BEGIN CERTIFICATE-----
+MIIDCDCCAfCgAwIBAgIUN8q64V++mYa343wCqN+eOh3YaDUwDQYJKoZIhvcNAQEL
+BQAwHTEbMBkGA1UEAwwSZGh0dHBzLm5uaWtlLmdhbW1hMB4XDTIzMDUyMzA5NTA0
+NFoXDTMxMDgwOTA5NTA0NFowHTEbMBkGA1UEAwwSZGh0dHBzLm5uaWtlLmdhbW1h
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0OyaYxAF5v6m/t1pvTvc
+QIE5bWl/Dyo6fQltNQoXKJrwlkED/QRNazLmLL3xDkPnugtr0lBuxZHVy5+6/X5x
+ToWZFXPI0uKcs6tLV9QWesfQH4bxfNMmNQ30w0UJ7fUoyzP+DlZjPOwOEfHj872k
+KgIyzCEyh23K4EowbM0YaFNhHtCHBWb3oDLVvRBZA02RMCzY5Y6OyENXup9wCUjT
+3WONayor3OAVe8h2elqNOFbOLUWRFzJ553+0VTe9X9kZMeCkzvkpFI9CQnrFY2Jt
+jOX0c5jyjmH4Tu9GNoCj8EY4/+vycV8sZj60ybu04uUjMegA1Gc3oA0JiVXV/L2T
+SwIDAQABo0AwPjAdBgNVHREEFjAUghJkaHR0cHMubm5pa2UuZ2FtbWEwHQYDVR0O
+BBYEFJbRFr/HUQ+PAyEFE021CZhPzHKcMA0GCSqGSIb3DQEBCwUAA4IBAQBPvQFG
+ftM+59yCYbt/FJL6NfIaVao8i35rlns6YPiNClbLnvcEG0ZLYw7+M8v5tEtfCL4c
+teZ13km+A0MbCY+4hgJO7hVpRJEgh1tvH7Avgxz8CPutQAy72TXWYwiBI2vBSFbv
+pSLf8CgfU53kiCosBbLIAPov5i1wT22QSEZG1bIbPK6hMyzqSqwtdEGiXArH9LKb
+2fcyarQYqwAY1ptzflUPkvRXXwReIKqeKoChunshOmC0VlbhJFGtVNM4t/LWR3LE
+gySfD4+IIy0yoKJCXjSW72SmaTx6nZLf+R4AEdiqbyF2h0ihStqzX+OF9ffnSWp2
+gVKI73Rn0GpFnUVu
 -----END CERTIFICATE-----`;
-const key = `-----BEGIN PRIVATE KEY-----
-MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDXJmrdb9oUg7NN
-2FVWGTfDexNsgObRFko2NVlinHfC9hQyzZZtP6tlufnXMTca6F6VdCWMc4UWqbIk
-8Q0yUcQj3rIxv06MFFouyVDaxWmRLpLp3HQpJU5NzYiAbNd71A8K0MdEe5TVsc7p
-4iy/FXWLEmurx+P93w9KEXN0xDYY3EznfBgLb3kb9jWBcAhA87Z/MC2q2favNgJZ
-MrzwWX+Kkk3eMzDpmFoahwDnrHFS+IGPVu536YUIR6rnYKK0bGMCu5pIXv664hkj
-tHDXOdP9T6Q42rDJHmcyT5KQ+Z2gRvRlaOQ2YylfIDNO0zRAT/FRihU3DaXeCt/F
-d4fNKRVzAgMBAAECggEAP1dtpeTcySZe/x+ePBtviesttEec7NjJn30EZF5ZefoV
-x0E0tNRGY0wmDJ9OMGtSEWEg/uExwRLTwkF/l51wB/lz7+Z5Ow9w345gchAlvNr/
-4L8JKeX0UD6fHeQtaqTris0dpYFWt7VCDCSM9PLd6MRTE79lVaQ6rZ1Gpw1vOdDz
-zPiyMzwruqryAyGc8/QjNIBPFk+bpzbUmz4dAPP2EL+QZXSTwuKP8hE8FxW3oS1k
-pzpzCiw+ckuoXuYLKvetOFN7XFYTvaO4ChunalIaLOp6CQHNdpjG8qN4qLDIi0qC
-B5Kf/9KFt4aug/04OLOvAFJ5ZFauZWEdxk97PeA4tQKBgQDksllB2mXJhGZw1uWt
-ruZs8uOI1co4tX/mmdZsir9PlaAO+m8pJTwK++mGGNLJgLOkmR7UvlxNPLjAIcxD
-8ho2AHUeKaEeDA4mRz2nvEPSva8HYtuDyFvXd8uueSQsFIqePWswRqPxnH3SyD28
-tJfru8WhATGEFjOBXBT+PvsHnQKBgQDw1gtNtfw2c0+fHduc21EXabdRUlsEy8BJ
-j6A+O2kRn5JIYEeo2syV2zsnpyy7AG9PT4nErodde4LIAI6eGbnoz6loptN6HI4Y
-xS7EMkyXkzh49007ZLs+V/Ya2R3WYcL3X/5K11VfIDpysastZEz/yyAG7JKtUdeG
-pd7WklHsTwKBgQCXe5MnzZPygWKhh5anDtzOeaxBbOr/2SkZA/lF+Dl0a7WTdkq/
-REybMfWivzqQAlH7yvjjDhxxhLETgs+cifbWokLxcb2o+28756BtRITgSIhxKggh
-KEu9Uzp1HQTatdiDrEcduQzK809cmQpbvnuKx9vGI9Y6mcIQA4BcUDdS+QKBgQDs
-qkp9WUK592LdCChR4iu0CEz++yE6e0dAgoWD4joD+X105jhFNI4rDT76XovUUD8R
-/yVxQ9j+AmuoQvPjZYCNydO+ZYIX04vHx62HW65snV23cb5RiVF/mEzeYVGy5GsF
-US3BOg5I5pDJONLwTkpka6XTaBNTgsN7K/Dphuw+fQKBgQCEkJ1qpjW/gbPZn/1c
-+t+qphye+Iz3nMA12jWWWzHZ67crCP+8qsY0S7aO3tLAGYDCD2FR2YxS0/C4svZ6
-xBJKkvlxOHQuIs/rlFXOqmRWzR08QFaw8IDKlsEGo1cmZiF88z+ISq/gnR73UW7P
-C3nQhEPk24D2CpkotUtMoBK0cA==
+export const key = `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQ7JpjEAXm/qb+
+3Wm9O9xAgTltaX8PKjp9CW01ChcomvCWQQP9BE1rMuYsvfEOQ+e6C2vSUG7FkdXL
+n7r9fnFOhZkVc8jS4pyzq0tX1BZ6x9AfhvF80yY1DfTDRQnt9SjLM/4OVmM87A4R
+8ePzvaQqAjLMITKHbcrgSjBszRhoU2Ee0IcFZvegMtW9EFkDTZEwLNjljo7IQ1e6
+n3AJSNPdY41rKivc4BV7yHZ6Wo04Vs4tRZEXMnnnf7RVN71f2Rkx4KTO+SkUj0JC
+esVjYm2M5fRzmPKOYfhO70Y2gKPwRjj/6/JxXyxmPrTJu7Ti5SMx6ADUZzegDQmJ
+VdX8vZNLAgMBAAECggEAKQ1Musljt4NzMeI0zEOuYBhkPdz8Y/DyxC3tgP4GFer3
++jY1P+qwAa/jLYh3DMwIBPUIjy9RzM1+mn+84OGPBxRWQ7JYFCQGEYHHkK7yadbI
+TOGZouLkf4lJ/nKa5GCHTwJc2dlcr5RcoWcL2RF65+w9qgGd6aGHuzGouUBFmv3o
+JWdqf8FAQWQIjQwQ6B4o7xLaMLNbDMbLcAHBU4rdCcFdFbvKr2kIl0Bgr3WcH1zk
+OKoyjjIvZUkRUL7KzZdpcgTh12Oy/0id4ApMZKI0yih9IX84qbQtIctLIPaK2Rqk
+Xb35txchob674qCj/pYcHmYb6/U7EoUM6SOP1t/PSQKBgQD2lP795d5DHA58VOmZ
+YGaswdrx5hf5+l35TLEIM5jkfMJ2hlK5NkaooprCGnJ/Gcm92bB0dC9wP7rr6NPE
+i/W+45GcRtT9vV8k78O8vb/32hHUxhPYiWRd4yDjbtZaQKbYzBFWmeYnwNZWHWXQ
+eK9A+ZF8MccsCcwVWvseNExHQwKBgQDY52aQtDBeqcS1oHpc/WwqExi2nB0jR2xb
+dhugCdj+rrLTQu8yGPt9zM3Yo2luIOqbELqXLUy9WRNsu3g1X5kP1AXHlu5RT58Z
+cYZjvy2PIJamcTAsM27C6BXQnqj4N2QGlmP3yyuXrakQxITBjSqv9tR9LdbXxo8N
+Z5GJU1avWQKBgQDvZzevMNe7lmjmA9cNZ9AoGMrHI1vSA2fr3K7gxJ/D7vEq/D0i
+v3SY086nd+AEUPhTECDG3+sS8307AEFiyXRd0jqUXRz8Ajl29ia3gA76x8maKHoq
+OTKuCQ/sYLdSxwR25qJKz37qx8oRr9cjMZkN34CF8RpsQlLXxQ6cg7AvWwKBgG5Z
+m8a2xX0Dpf45fMdebu8g9AvDdNeD+M63Ueqj1/AKdRQiE4tLRneEAJ3c1UCgIntt
+kWBkPYx/ivBgmBGfZ0G0PpSCZxCbD3hkV1jb5JPSopJfN4DlUc57QM34SkKt+4eW
+b5mblbv/L+pF8Lx/013el9Bvx8PTUugg7twMuCdRAoGAd9ISZiWBCEMMsEM2iZfl
+yTgYflMeLaC2qdATlCjdA81NeYOcyrcfYcTAlv/gF14Z33/eGUXg0AQytCz/MqMx
+pGd08//ztmvpeH56AZfw0TVAkI4CPtT8X3h2zXpovkA9Dzbzjzz5e/4LMaU87zgt
+93EoUcn+T54VStbTMlzvO9A=
 -----END PRIVATE KEY-----`;
 
-let serv: any;
-const startServer = () => {
-  serv = https
+const servers: { [key: string]: https.Server } = {};
+
+export const startServer = (
+  getServers: () => any,
+  serv: string,
+  port: number,
+) => {
+  const serverss = getServers();
+  serverss[serv] = https
     .createServer(
       {
         cert,
         key,
       },
       (req, res) => {
+        // Used in or.spec.ts
+        if (serv === 'serv2') {
+          res.statusCode = 500;
+          res.end();
+          return;
+        }
+
         if (req.url === '/stream') {
           res.write('streams');
           setTimeout(() => {
@@ -88,25 +107,33 @@ const startServer = () => {
         });
       },
     )
-    .listen(8001);
+    .listen(port);
 };
-const stopServer = () => {
+export const stopServer = (serv: any) => {
   serv.close();
 };
 
-describe('dhttps, get/post/put queries on local web server', () => {
-  before(startServer);
-  after(stopServer);
+describe('[simple domains] get/post/put queries on local web server', () => {
+  before(() => {
+    startServer(() => servers, 'serv1', 8001);
+  });
+  after(() => {
+    stopServer(servers.serv1);
+  });
   it('should dhttps.get', (done) => {
-    dhttps.get('https://dhttps.dappy.gamma:8001/path?query', (res) => {
+    const req = dhttps.get(`https://${testDomain}:8001/path?query`, (res) => {
       res.on('data', (c: Buffer) => {
         expect(c.toString('utf8')).to.eql('GET /path?query');
         done();
       });
     });
+    req.on('error', (err: any) => {
+      console.error(err);
+      process.exit(1);
+    });
   });
   it('should dhttps.get (stream)', (done) => {
-    dhttps.get('https://dhttps.dappy.gamma:8001/stream', (res) => {
+    const req = dhttps.get(`https://${testDomain}:8001/stream`, (res) => {
       let d = '';
       res.on('data', (c: Buffer) => {
         d += c.toString('utf8');
@@ -116,13 +143,17 @@ describe('dhttps, get/post/put queries on local web server', () => {
         done();
       });
     });
+    req.on('error', (err: any) => {
+      console.error(err);
+      process.exit(1);
+    });
   });
   it('should dhttps.request(post)', (done) => {
     const req = dhttps.request(
       {
         port: '8001',
         method: 'post',
-        host: 'dhttps.dappy.gamma',
+        host: testDomain,
         path: '/path?query',
       },
       (res) => {
@@ -132,6 +163,10 @@ describe('dhttps, get/post/put queries on local web server', () => {
         });
       },
     );
+    req.on('error', (err: any) => {
+      console.error(err);
+      process.exit(1);
+    });
     req.end();
   });
   it('should dhttps.request(post) with JSON payload', (done) => {
@@ -139,7 +174,7 @@ describe('dhttps, get/post/put queries on local web server', () => {
       {
         port: '8001',
         method: 'post',
-        host: 'dhttps.dappy.gamma',
+        host: testDomain,
         path: '/path?query',
       },
       (res) => {
@@ -149,6 +184,10 @@ describe('dhttps, get/post/put queries on local web server', () => {
         });
       },
     );
+    req.on('error', (err: any) => {
+      console.error(err);
+      process.exit(1);
+    });
     req.end(JSON.stringify({ hello: 'world' }));
   });
   it('should dhttps.request(put)', (done) => {
@@ -156,7 +195,7 @@ describe('dhttps, get/post/put queries on local web server', () => {
       {
         port: '8001',
         method: 'put',
-        host: 'dhttps.dappy.gamma',
+        host: testDomain,
         path: '/path?query',
       },
       (res) => {
@@ -166,16 +205,22 @@ describe('dhttps, get/post/put queries on local web server', () => {
         });
       },
     );
+    req.on('error', (err: any) => {
+      console.error(err);
+      process.exit(1);
+    });
     req.end();
   });
 });
 
-describe("override Node's https, get/post/put queries on local web server", () => {
+describe('[simple domains] override mode, get/post/put queries on local web server', () => {
   before(() => {
-    startServer();
+    startServer(() => servers, 'serv1', 8001);
     dhttps.overrideNodeHttps();
   });
-  after(stopServer);
+  after(() => {
+    stopServer(servers.serv1);
+  });
   it('should not https.get example.com (overridden)', (done) => {
     const req = https.get('https://example.com', (res) => {
       res.on('data', () => {});
@@ -207,7 +252,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
     });
   });
   it('should https.get (overridden)', (done) => {
-    https.get('https://dhttps.dappy.gamma:8001/path?query', (res) => {
+    https.get(`https://${testDomain}:8001/path?query`, (res) => {
       res.on('data', (c: Buffer) => {
         expect(c.toString('utf8')).to.eql('GET /path?query');
         done();
@@ -219,7 +264,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
       {
         port: '8001',
         method: 'post',
-        host: 'dhttps.dappy.gamma',
+        host: testDomain,
         path: '/path?query',
       },
       (res) => {
@@ -236,7 +281,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
       {
         port: '8001',
         method: 'put',
-        host: 'dhttps.dappy.gamma',
+        host: testDomain,
         path: '/path?query',
       },
       (res) => {
@@ -258,7 +303,7 @@ describe("override Node's https, get/post/put queries on local web server", () =
         ca: [cert],
         path: '/path?query',
         headers: {
-          host: 'dhttps.dappy.gamma',
+          host: testDomain,
         },
       },
       (res) => {
@@ -272,31 +317,25 @@ describe("override Node's https, get/post/put queries on local web server", () =
   });
 });
 
-/* describe.only("override Node's https, same but with node-fetch", () => {
+describe("[simple domains] unoverride Node's https", () => {
   before(() => {
-    startServer();
-    dhttps.overrideNodeHttps();
-  });
-  after(stopServer);
-  it('should node-fetch.get', (done) => {
-    fetch('https://dhttps.dappy.gamma:8001/path?query').then((res: any) => {
-      console.log(res.text());
-      expect(res.text()).to.eql('GET /path?query');
-      done();
-    });
-  });
-}); */
-
-describe("unoverride Node's https", () => {
-  before(() => {
-    startServer();
+    startServer(() => servers, 'serv1', 8001);
     dhttps.unoverrideNodeHttps();
   });
-  after(stopServer);
-  it('should https.get', (done) => {
+  after(() => {
+    stopServer(servers.serv1);
+  });
+  it('should https.get example.com', (done) => {
     https.get('https://example.com', (res) => {
       expect(res.statusCode).to.eql(200);
-      done();
+      let data = '';
+      res.on('data', (d) => {
+        data += d;
+      });
+      res.on('end', () => {
+        expect(data.startsWith('<!doctype html>')).to.equal(true);
+        done();
+      });
     });
   });
 });

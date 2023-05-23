@@ -1,12 +1,12 @@
 ![dhttps large image](https://raw.githubusercontent.com/fabcotech/dhttps/master/assets/dhttps.jpg)
 
-**dhttps** makes every nodeJS program 1000x more secure by isolating https requests from the Operating System, the Domain Name System and node's web PKI (hardcoded certificates authority from [Mozilla](https://wiki.mozilla.org/CA/Included_Certificates)) for TLS certificate verification.
+**dhttps** makes every nodeJS program 1000x more secure by isolating https requests from the Operating System, the Domain Name System and NodeJS's web PKI (hardcoded certificates authority from [Mozilla](https://wiki.mozilla.org/CA/Included_Certificates)) for TLS certificate verification.
 
-dhttps uses instead [dappy](https://dappy.tech), a new service discovery and name system co-secured by independent companies. Dappy's goal is to avoid at all cost hacks or inaccuracies in the service discovery phase, it was designed mainly for financial or other high value programs and web applications.
+dhttps uses instead [dappy](https://dappy.tech), a new service discovery and name system co-secured by independent companies, it's very similar to a blockchain. Dappy's goal is to avoid at all cost hacks, TLS man-in-the-middle attacks, or inaccuracies in the service discovery phase, it was designed mainly for financial, blockchain or other high value programs and web applications.
 
 ### How exactly is it more secure ?
 
-In short, dappy domains end with **.d**, and they can be resolved (resolution means discovery of IP address and root certificate for TLS) only if the companies of the dappy network that are queried agree on the values, those companies are connected through a leaderless DLT. This distributed trust approach ensures that the client, program or browser never gets a wrong IP address or root certificate for a given domain.
+Dappy domains end with **.d**, and they can be resolved (resolution means discovery of IP address and root certificate for TLS) **only if the companies of the dappy network that are queried agree on the values**, those companies are connected through a leaderless DLT. This distributed trust approach ensures that the client, program or browser never gets a wrong IP address or root certificate for a given domain.
 
 This process is called co-resolution, co-resolution is performed over TLS by **dhttps** and not by a remote DNS resolver or service. Libraries and programs powered by dappy are independent from the certificate authorities system and the DNS.
 
