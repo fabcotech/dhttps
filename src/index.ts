@@ -106,7 +106,7 @@ const dhttps = {
 
     let endCalled = false;
 
-    let onErrorGlobal: null | ((a: any) => void) = (a) => null;
+    let onErrorGlobal: null | ((a: any) => void) = () => null;
     let onErrorCallback: null | ((a: any) => void) = null;
     let error: any = null;
     let payload: null | Buffer | string = null;

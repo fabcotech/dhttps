@@ -1,13 +1,13 @@
 {
   "name": "@fabcotech/dhttps",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Activate resolution of .d domains in any nodeJS runtime",
   "author": "FABCO <contact@fabco.tech>",
   "license": "MIT",
-  "homepage": "https://github.com/fabcotech/dappy-tools",
+  "homepage": "https://github.com/fabcotech/dhttps",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fabcotech/dappy-tools.git"
+    "url": "git+https://github.com/fabcotech/dhttps.git"
   },
   "keywords": [
     "https",
@@ -21,7 +21,6 @@
   ],
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "cli": "dist/cli/index.js",
   "files": [
     "dist/",
     "dist/index.d.ts",
