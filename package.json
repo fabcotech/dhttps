@@ -1,6 +1,6 @@
 {
   "name": "@fabcotech/dhttps",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Activate resolution of .d domains in any nodeJS runtime",
   "author": "FABCO <contact@fabco.tech>",
   "license": "MIT",

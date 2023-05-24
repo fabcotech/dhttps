@@ -1,14 +1,18 @@
 ![dhttps large image](https://raw.githubusercontent.com/fabcotech/dhttps/master/assets/dhttps.jpg)
 
-**dhttps** makes every nodeJS program 1000x more secure by isolating https requests from the Operating System, the Domain Name System and NodeJS's web PKI (hardcoded certificates authority from [Mozilla](https://wiki.mozilla.org/CA/Included_Certificates)) for TLS certificate verification.
+**dhttps** allows nodeJS developers to rapidly and seamlessly use .d domains (dappy) in their programs. It has the exact same interface as NodeJS's https.
 
-dhttps uses instead [dappy](https://dappy.tech), a new service discovery and name system co-secured by independent companies, it's very similar to a blockchain. Dappy's goal is to avoid at all cost hacks, TLS man-in-the-middle attacks, or inaccuracies in the service discovery phase, it was designed mainly for financial, blockchain or other high value programs and web applications.
+[dappy](https://dappy.tech) is a new domain name technology, domains are scopped under .d TLD and do not collide with any ICANN domain. Dappy was built for critical web applications, and with special care for developer experience and automation (management is JSON + CLI based).
 
 ### How exactly is it more secure ?
 
-Dappy domains end with **.d**, and they can be resolved (resolution means discovery of IP address and root certificate for TLS) **only if the companies of the dappy network that are queried agree on the values**, those companies are connected through a leaderless DLT. This distributed trust approach ensures that the client, program or browser never gets a wrong IP address or root certificate for a given domain.
+The DNS + CA system imposes reliance on many unique agents : a resolver ran by Google or Cloudflare, Verisign for .com domains, and also imposes to trust [hundreds of CAs](https://wiki.mozilla.org/CA/Included_Certificates) independently. This creates major trust issues, frictions and possibilities of hacking or spying.
 
-This process is called co-resolution, co-resolution is performed over TLS by **dhttps** and not by a remote DNS resolver or service. Libraries and programs powered by dappy are independent from the certificate authorities system and the DNS.
+Service discovery for .d domains is based on co-resolution, multiple companies or foundations constitute the dappy network and share a state by being part of the same ledger/blockchain-like network. The requests hit multiple independent companies, and consensus is performed on the answers at client level (no single resolver). One company cannot fool the client.
+
+Co-resolution is performed for IP addresses and TLS certificates that are also stored in the dappy name system. Certificates are self-signed, no need to have them signed by an authority, or renewed.
+
+**In short : a 100x simpler, more secure and trustless service discovery, leading to highly private and secure HTTPS connections.**
 
 ### How to use
 
@@ -51,8 +55,6 @@ const req1 = https.get('https://dappy.d', (res) => {
 });
 req1.on('error', console.log);
 
-dhttps.overrideNodeHttps();
-
 const req2 = https.request(
   {
     method: 'post',
@@ -60,7 +62,7 @@ const req2 = https.request(
     path: '/',
   },
   (res) => {
-    console.log(res.statusText);
+    console.log(res.statusCode);
   },
 );
 req2.on('error', console.log);

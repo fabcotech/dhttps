@@ -5,6 +5,8 @@ import { lookupSimple } from '@fabcotech/dappy-lookup';
 import { validIpv4 } from './utils/validIpv4';
 import { separateHostsFromUrl } from './utils/separateHostsFromUrl';
 
+const supportedStatusCodes = [200, 400, 401, 403, 404, 405];
+
 const getOptions = async (url: string, method: undefined | string) => {
   if (!url.startsWith('https://')) {
     throw new Error('Dappy only works with https');
@@ -124,10 +126,12 @@ const dhttps = {
       ) {
         if (method === 'get') {
           return (https as any).getO(options, (res: any) => {
-            if ([200, 400, 401, 403, 404].includes(res.statusCode)) {
+            if (supportedStatusCodes.includes(res.statusCode)) {
               cb(res);
             } else {
-              (onErrorGlobal as any)('Unsupported status code');
+              (onErrorGlobal as any)(
+                `Unsupported status code ${res.statusCode}`,
+              );
             }
             res.on('error', (err: any) => {
               (onErrorGlobal as any)(err);
@@ -136,10 +140,12 @@ const dhttps = {
         }
         return (https as any)
           .requestO(options, (res: any) => {
-            if ([200, 400, 401, 403, 404].includes(res.statusCode)) {
+            if (supportedStatusCodes.includes(res.statusCode)) {
               cb(res);
             } else {
-              (onErrorGlobal as any)('Unsupported status code');
+              (onErrorGlobal as any)(
+                `Unsupported status code ${res.statusCode}`,
+              );
             }
             res.on('error', (err: any) => {
               (onErrorGlobal as any)(err);
@@ -176,10 +182,12 @@ const dhttps = {
             },
           },
           (res: any) => {
-            if ([200, 400, 401, 403, 404].includes(res.statusCode)) {
+            if (supportedStatusCodes.includes(res.statusCode)) {
               cb(res);
             } else {
-              (onErrorGlobal as any)('Unsupported status code');
+              (onErrorGlobal as any)(
+                `Unsupported status code ${res.statusCode}`,
+              );
             }
             res.on('error', (err: any) => {
               (onErrorGlobal as any)(err);
