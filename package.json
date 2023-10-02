@@ -61,7 +61,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@fabcotech/dappy-lookup": "2.3.15"
+    "@fabcotech/dappy-lookup": "2.3.17"
   },
   "bugs": {
     "url": "https://github.com/fabcotech/dappy-lookup/issues"
